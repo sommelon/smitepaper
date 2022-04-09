@@ -36,10 +36,10 @@ class Scraper:
         self.writer = writer
         self.scraped_skins = set()
         if os.path.isfile(WALLPAPERS_FILENAME):
-            with open(WALLPAPERS_FILENAME, "r") as f:
+            with open(WALLPAPERS_FILENAME, "r", encoding="utf-8") as f:
                 reader = csv.reader(f)
                 for row in reader:
-                    self.scraped_skins.add((row[0], row[1]))
+                    self.scraped_skins.add((row[0], row[1] if row[1] else None))
 
     def scrape(self, limit=1000, offset=0):
         slugs = self._get_slugs(limit, offset)
