@@ -15,4 +15,4 @@
 - [ ] Add command line arguments to:
     - [ ] Specify file names from/to which to read/write
     - [ ] Specify file names of the wallpapers (for the download function)
-    - [ ] Decide wether to save skins that don't have wallpapers
+    - [ ] Decide whether to save skins that don't have wallpapers
