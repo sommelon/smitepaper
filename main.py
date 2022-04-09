@@ -6,6 +6,7 @@ from parsel import Selector
 import os.path
 import csv
 
+from utils import Wallpaper, get_god_name
 from writers import BaseWriter, CsvWriter
 
 
@@ -20,17 +21,6 @@ def main():
     scraper.scrape()
 
 
-class Wallpaper:
-    def __init__(self, name, image_link, size):
-        self.name = name
-        self.image_link = image_link
-        self.size = size
-
-    def to_csv(self):
-        size = f"{self.size[0]}x{self.size[1]}" if self.size else None
-        return [self.name, self.image_link, size]
-
-
 class Scraper:
     def __init__(self, writer: BaseWriter):
         self.writer = writer
@@ -39,7 +29,7 @@ class Scraper:
             with open(WALLPAPERS_FILENAME, "r", encoding="utf-8") as f:
                 reader = csv.reader(f)
                 for row in reader:
-                    self.scraped_skins.add((row[0], row[1] if row[1] else None))
+                    self.scraped_skins.add((row[1], row[2] if row[2] else None))
 
     def scrape(self, limit=1000, offset=0):
         slugs = self._get_slugs(limit, offset)
@@ -81,7 +71,9 @@ class Scraper:
                 for wallpaper in wallpapers:
                     if (wallpaper.name, wallpaper.image_link) in self.scraped_skins:
                         continue
-                    data.append(wallpaper.to_csv() + [slug])
+                    data.append(
+                        [get_god_name(wallpaper.name)] + wallpaper.to_csv() + [slug]
+                    )
                     self.scraped_skins.add((wallpaper.name, wallpaper.image_link))
                 self.writer.write(data, mode="a")
             except Exception as e:
