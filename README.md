@@ -12,8 +12,10 @@
 
 ### TODOs
 - [x] Extract the god name from the skin name to allow for better file naming
-- [ ] Download wallpapers from the scraped links
+- [x] Download wallpapers from the scraped links
+- [ ] Add progress bar ([tqdm](https://github.com/tqdm/tqdm))
 - [ ] Add command line arguments to:
     - [ ] Specify file names from/to which to read/write
-    - [ ] Specify file names of the wallpapers (for the download function)
-    - [ ] Decide whether to save skins that don't have wallpapers
+    - [ ] Specify file name format for the wallpapers
+    - [ ] Decide whether to scrape skins that don't have wallpapers
+    - [ ] Switch between scraping and downloading
