@@ -1,4 +1,7 @@
 from functools import lru_cache
+import requests
+import sys
+from requests.exceptions import InvalidURL, MissingSchema
 
 
 GODS_FILENAME = "gods.txt"
@@ -40,12 +43,50 @@ def get_god_name(skin_name):
     return _ask_for_god_name(skin_name)
 
 
+def is_url_valid(url):
+    req = requests.PreparedRequest()
+    try:
+        req.prepare_url(url, None)
+    except (MissingSchema, InvalidURL):
+        return False
+    return True
+
+
 class Wallpaper:
-    def __init__(self, name, image_link, size):
+    SIZE_DELIMITER = "x"
+
+    def __init__(self, name, image_link, size, god=None, slug=None):
         self.name = name
         self.image_link = image_link
+        if isinstance(size, str):
+            if Wallpaper.SIZE_DELIMITER not in size:
+                raise ValueError(
+                    f"Size {size} doesn't contain {Wallpaper.SIZE_DELIMITER}",
+                )
+            size = size.split(Wallpaper.SIZE_DELIMITER)
+            size = tuple(map(int, size))
         self.size = size
+        self.god = god
+        self.slug = slug
+
+    def size_to_text(self):
+        return (
+            f"{self.size[0]}{Wallpaper.SIZE_DELIMITER}{self.size[1]}"
+            if self.size
+            else None
+        )
 
     def to_csv(self):
-        size = f"{self.size[0]}x{self.size[1]}" if self.size else None
+        size = self.size_to_text()
         return [self.name, self.image_link, size]
+
+    def get_filename(self):
+        god = self.god or ""
+        name = self.name or ""
+        size = self.size_to_text() or ""
+        file_extension = (
+            self.image_link.split(".")[-1]
+            if self.image_link and "." in self.image_link
+            else ""
+        )
+        return f"{god} {name} {size}.{file_extension}".replace(" +", "")

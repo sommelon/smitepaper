@@ -7,7 +7,7 @@ from parsel import Selector
 import os.path
 import csv
 
-from utils import Wallpaper, get_god_name
+from utils import Wallpaper, get_god_name, is_url_valid
 from writers import BaseWriter
 
 POSTS_URL = "https://cms.smitegame.com/wp-json/smite-api/get-posts/1"
@@ -70,8 +70,7 @@ class Scraper:
                     self.scraped_skins.add((wallpaper.name, wallpaper.image_link))
                 self.writer.write(data, mode="a")
             except Exception as e:
-                print("Error on url " + url + ": ", file=sys.stderr)
-                raise e
+                raise Exception("Error on url " + url) from e
 
     def _get_wallpapers(self, url):
         print(url)
@@ -130,7 +129,8 @@ class Scraper:
         wallpapers = []
         for anchor in anchors_selector:
             image_link = anchor.xpath("@href").get()
-            if not int(anchor.xpath("contains(@href,'http')").get()):
+            if not is_url_valid(image_link):
+                print(f"URL {image_link} not valid.", file=sys.stderr)
                 image_link = None
             size = anchor.xpath("text()").get()
             size = re.findall("\\d+", size)
