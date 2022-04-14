@@ -1,6 +1,11 @@
 # Smitepaper
 ### Smite wallpaper scraper
 
+### Run
+```
+python3 smitepaper.py
+```
+
 ### Process
 - Grab all the slugs of posts with the tag `Update Notes` on the [https://www.smitegame.com/news/](https://www.smitegame.com/news/) page.
 - The slugs are saved to `slugs.txt` and the second time the script is run and the file exists, the slugs are read from there.
