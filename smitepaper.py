@@ -1,3 +1,5 @@
+import argparse
+
 from constants import WALLPAPERS_FILENAME
 from downloader import Downloader
 from scraper import Scraper
@@ -5,12 +7,52 @@ from scraper import Scraper
 from writers import CsvWriter
 
 
-def main():
-    scraper = Scraper(CsvWriter(WALLPAPERS_FILENAME))
-    scraper.scrape()
+def main(args):
+    scrape(args)
+    download(args)
+
+
+def scrape(args):
+    print("scraping", args)
+    # scraper = Scraper(CsvWriter(WALLPAPERS_FILENAME))
+    # scraper.scrape()
+
+
+def download(args):
+    print("downloading", args)
     # downloader = Downloader(sizes={(3840, 2160)})
     # downloader.download()
 
 
 if __name__ == "__main__":
-    main()
+    main_parser = argparse.ArgumentParser(description="")
+    main_parser.set_defaults(func=main)
+    subparsers = main_parser.add_subparsers(title="commands")
+    parent_parser = argparse.ArgumentParser(add_help=False)
+    slug_group = parent_parser.add_mutually_exclusive_group()
+    slug_group.add_argument("-s", "--slug")
+    slug_group.add_argument("-i", "--input-file", default="slugs.txt")
+    parent_parser.add_argument("-g", "--god")
+    parent_parser.add_argument("--skin")
+    parent_parser.add_argument("--size")
+    parent_parser.add_argument("-o", "--output-file", default="slugs.txt")
+
+    scrape_parser = subparsers.add_parser(
+        "scrape",
+        help="Scrape information about wallpapers.",
+        parents=[parent_parser],
+    )
+    scrape_parser.add_argument(
+        "-f", "--format", choices=["god", "skin", "link", "size", "slug"], nargs="+"
+    )
+    scrape_parser.set_defaults(func=scrape)
+
+    download_parser = subparsers.add_parser(
+        "download",
+        help="Download wallpapers from the scraped data.",
+        parents=[parent_parser],
+    )
+    download_parser.set_defaults(func=download)
+
+    args = main_parser.parse_args()
+    args.func(args)
