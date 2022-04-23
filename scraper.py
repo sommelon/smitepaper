@@ -10,8 +10,8 @@ import csv
 from utils import Wallpaper, get_god_name, is_url_valid
 from writers import BaseWriter
 
-POSTS_URL = "https://cms.smitegame.com/wp-json/smite-api/get-posts/1"
-POST_URL = "https://cms.smitegame.com/wp-json/smite-api/get-post/1"
+MULTIPLE_POSTS_URL = "https://cms.smitegame.com/wp-json/smite-api/get-posts/1"
+SINGLE_POST_URL = "https://cms.smitegame.com/wp-json/smite-api/get-post/1"
 
 
 class Scraper:
@@ -35,7 +35,7 @@ class Scraper:
                 return f.read().splitlines()
 
         response = requests.get(
-            POSTS_URL,
+            MULTIPLE_POSTS_URL,
             dict(
                 per_page=limit,
                 offset=offset,
@@ -57,7 +57,7 @@ class Scraper:
 
     def _scrape_slugs(self, slugs):
         for slug in slugs:
-            url = POST_URL + f"?slug={slug}"
+            url = SINGLE_POST_URL + f"?slug={slug}"
             try:
                 wallpapers = self._get_wallpapers(url)
                 data = []
