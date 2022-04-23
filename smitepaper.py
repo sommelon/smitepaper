@@ -1,10 +1,16 @@
 import argparse
+import logging
+import datetime
 
-from constants import WALLPAPERS_FILENAME
+from constants import ALL_SIZES, SLUGS_FILENAME, WALLPAPERS_FILENAME
 from downloader import Downloader
-from scraper import Scraper
+from scraper import WallpaperScraper
+from utils import size
 
 from writers import CsvWriter
+
+time = datetime.date.today()
+logging.basicConfig(filename=f"{time}.log", level=logging.INFO)
 
 
 def main(options):
@@ -14,8 +20,10 @@ def main(options):
 
 def scrape(options):
     print("scraping", options)
-    # scraper = Scraper(CsvWriter(WALLPAPERS_FILENAME))
-    # scraper.scrape()
+    # slug_scraper = SlugScraper()
+    # slugs = slug_scraper.scrape()
+    # wallpaper_scraper = WallpaperScraper(CsvWriter(WALLPAPERS_FILENAME), slugs=slugs)
+    # wallpaper_scraper.scrape()
 
 
 def download(options):
@@ -30,12 +38,12 @@ if __name__ == "__main__":
     subparsers = main_parser.add_subparsers(title="subcommands")
     parent_parser = argparse.ArgumentParser(add_help=False)
     slug_group = parent_parser.add_mutually_exclusive_group()
-    slug_group.add_argument("-s", "--slugs", nargs="+")
-    slug_group.add_argument("-i", "--input-file", default="slugs.txt")
-    parent_parser.add_argument("-g", "--god")
-    parent_parser.add_argument("--skin")
-    parent_parser.add_argument("--size")
-    parent_parser.add_argument("-o", "--output-file", default="slugs.txt")
+    slug_group.add_argument("-s", "--slug", nargs="+")
+    slug_group.add_argument("-i", "--input-file", default=SLUGS_FILENAME)
+    parent_parser.add_argument("-g", "--god", nargs="+")
+    parent_parser.add_argument("--skin", nargs="+")
+    parent_parser.add_argument("--size", type=size, nargs="+")
+    parent_parser.add_argument("-o", "--output-file", default=SLUGS_FILENAME)
 
     scrape_parser = subparsers.add_parser(
         "scrape",

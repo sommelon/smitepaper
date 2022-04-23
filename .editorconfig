@@ -1,0 +1,12 @@
+[*]
+insert_final_newline = true
+skip = .venv/
+
+
+[*.py]
+profile = black
+line_length = 88
+include_trailing_comma = true
+indent_style = space
+indent_size = 4
+trim_trailing_whitespace = true

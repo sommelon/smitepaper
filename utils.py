@@ -1,3 +1,4 @@
+import argparse
 from functools import lru_cache
 import requests
 import sys
@@ -50,6 +51,14 @@ def is_url_valid(url):
     except (MissingSchema, InvalidURL):
         return False
     return True
+
+
+def size(s):
+    try:
+        width, height = map(int, s.split("x"))
+        return width, height
+    except Exception:
+        raise argparse.ArgumentTypeError("Coordinates must be x,y,z")
 
 
 class Wallpaper:
