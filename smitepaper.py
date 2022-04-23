@@ -7,19 +7,19 @@ from scraper import Scraper
 from writers import CsvWriter
 
 
-def main(args):
-    scrape(args)
-    download(args)
+def main(options):
+    scrape(options)
+    download(options)
 
 
-def scrape(args):
-    print("scraping", args)
+def scrape(options):
+    print("scraping", options)
     # scraper = Scraper(CsvWriter(WALLPAPERS_FILENAME))
     # scraper.scrape()
 
 
-def download(args):
-    print("downloading", args)
+def download(options):
+    print("downloading", options)
     # downloader = Downloader(sizes={(3840, 2160)})
     # downloader.download()
 
@@ -27,10 +27,10 @@ def download(args):
 if __name__ == "__main__":
     main_parser = argparse.ArgumentParser(description="")
     main_parser.set_defaults(func=main)
-    subparsers = main_parser.add_subparsers(title="commands")
+    subparsers = main_parser.add_subparsers(title="subcommands")
     parent_parser = argparse.ArgumentParser(add_help=False)
     slug_group = parent_parser.add_mutually_exclusive_group()
-    slug_group.add_argument("-s", "--slug")
+    slug_group.add_argument("-s", "--slugs", nargs="+")
     slug_group.add_argument("-i", "--input-file", default="slugs.txt")
     parent_parser.add_argument("-g", "--god")
     parent_parser.add_argument("--skin")
