@@ -1,5 +1,7 @@
 import argparse
 from functools import lru_cache
+import warnings
+from constants import ALL_SIZES
 import requests
 import sys
 from requests.exceptions import InvalidURL, MissingSchema
@@ -56,9 +58,13 @@ def is_url_valid(url):
 def size(s):
     try:
         width, height = map(int, s.split("x"))
+        if (width, height) not in ALL_SIZES:
+            warnings.warn("This size is not common. Probably won't find anything.")
         return width, height
     except Exception:
-        raise argparse.ArgumentTypeError("Coordinates must be x,y,z")
+        raise argparse.ArgumentTypeError(
+            "Size must have the following format: 'WIDTHxHEIGHT' (eg. 1920x1080)."
+        )
 
 
 class Wallpaper:
