@@ -1,9 +1,9 @@
 import argparse
-from io import TextIOWrapper
 import logging
 import datetime
 
 from constants import (
+    CSV_DEFAULT_FORMAT,
     FILEMODE_LOAD,
     FILEMODE_OVERWRITE,
     SLUGS_FILENAME,
@@ -36,7 +36,7 @@ def scrape(options):
     if not options.slugs:
         vars(options)["slugs"] = scrape_slugs(options)
     print("scraping wallpapers", options)
-    # wallpaper_scraper = WallpaperScraper(CsvWriter(WALLPAPERS_FILENAME), slugs=slugs)
+    # wallpaper_scraper = WallpaperScraper(CsvWriter(options.wallpapers_output_file), slugs=slugs)
     # wallpaper_scraper.scrape()
 
 
@@ -65,9 +65,7 @@ if __name__ == "__main__":
     parent_parser.add_argument("-g", "--gods", nargs="+")
     parent_parser.add_argument("--skins", nargs="+")
     parent_parser.add_argument("--sizes", type=size, nargs="+")
-    parent_parser.add_argument(
-        "--format", choices=["god", "skin", "link", "size", "slug"], nargs="+"
-    )
+    parent_parser.add_argument("--format", choices=CSV_DEFAULT_FORMAT, nargs="+")
 
     slug_parent_parser = argparse.ArgumentParser(add_help=False)
     slug_parent_parser.add_argument(

@@ -1,17 +1,22 @@
 import argparse
 from functools import lru_cache
+import logging
 import warnings
-from constants import ALL_SIZES
+from constants import ALL_SIZES, GODS_FILENAME
 import requests
-import sys
 from requests.exceptions import InvalidURL, MissingSchema
 
-
-GODS_FILENAME = "gods.txt"
 
 f = open(GODS_FILENAME, "r")
 gods = f.read().splitlines()
 f.close()
+
+
+def valid_input(message, choices=("",)):
+    answer = input(message)
+    while answer not in choices:
+        answer = input(message)
+    return answer
 
 
 @lru_cache()  # Use a separate cache so we don't ask for the same skin name multiple times.
@@ -20,15 +25,12 @@ def _ask_for_god_name(skin_name):
     god = input(
         f"Couldn't find god name for skin {skin_name}. Enter the god name or skip by pressing enter: "
     )
+    logging.info(f"Couldn't guess god from skin {skin_name}. User entered: {god}.")
     return god if god else None
 
 
 @lru_cache()
 def get_god_name(skin_name):
-
-    if skin_name == "Neith’s Biggest Fan Zhong Kui":
-        return "Zhong Kui"
-
     name_map = {
         "AMC": "Ah Muzen Cab",
         "AhMuzen Cab": "Ah Muzen Cab",
@@ -36,12 +38,15 @@ def get_god_name(skin_name):
         "Chang’e": "Chang'e",
         "Sun Wukon": "Sun Wukong",
         "Earl Wubert": "Sun Wukong Earl Wubert",
+        "Neith’s Biggest Fan Zhong Kui": "Zhong Kui",
     }
+
     for k, v in name_map.items():
         skin_name = skin_name.replace(k, v)
 
     for god in gods:
         if god.lower() in skin_name.lower():
+            logging.info(f"Guessed god {god} from skin {skin_name}")
             return god
     return _ask_for_god_name(skin_name)
 
@@ -65,6 +70,15 @@ def size(s):
         raise argparse.ArgumentTypeError(
             "Size must have the following format: 'WIDTHxHEIGHT' (eg. 1920x1080)."
         )
+
+
+def readlines(filepath):
+    try:
+        with open(filepath, "r") as f:
+            lines = f.readlines()
+            return [line.strip() for line in lines if line.strip()]
+    except FileNotFoundError:
+        raise argparse.ArgumentTypeError(f"File {filepath} not found.")
 
 
 class Wallpaper:

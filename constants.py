@@ -10,3 +10,4 @@ ALL_SIZES = {
 FILEMODE_OVERWRITE = "o"
 FILEMODE_UPDATE = "u"
 FILEMODE_LOAD = "l"
+CSV_DEFAULT_FORMAT = ("god", "skin", "link", "size", "slug")
