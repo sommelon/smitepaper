@@ -4,6 +4,7 @@ import logging
 import datetime
 
 from constants import (
+    FILEMODE_LOAD,
     FILEMODE_OVERWRITE,
     SLUGS_FILENAME,
     FILEMODE_UPDATE,
@@ -88,8 +89,9 @@ if __name__ == "__main__":
     )
     slug_parent_parser.add_argument(
         "--slugs-filemode",
-        choices=(FILEMODE_OVERWRITE, FILEMODE_UPDATE),
-        help="whether to overwrite (o) or update (u) the output file if it exists",
+        choices=(FILEMODE_LOAD, FILEMODE_OVERWRITE, FILEMODE_UPDATE),
+        default=FILEMODE_LOAD,
+        help="whether to load and use (l), overwrite (o) or update (u) the output file if it exists",
     )
 
     scrape_parser = subparsers.add_parser(
@@ -99,8 +101,9 @@ if __name__ == "__main__":
     )
     scrape_parser.add_argument(
         "--wallpapers-filemode",
-        choices=(FILEMODE_OVERWRITE, FILEMODE_UPDATE),
-        help="whether to overwrite (o) or update (u) the output file if it exists",
+        choices=(FILEMODE_LOAD, FILEMODE_OVERWRITE, FILEMODE_UPDATE),
+        default=FILEMODE_LOAD,
+        help="whether to load and use (l), overwrite (o) or update (u) the output file if it exists",
     )
     scrape_parser.add_argument(
         "--wof",
