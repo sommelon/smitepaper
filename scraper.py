@@ -2,14 +2,21 @@ import logging
 import re
 import sys
 import json
-from constants import SLUGS_FILENAME, WALLPAPERS_FILENAME
+from typing import List
+from constants import (
+    CSV_DEFAULT_FORMAT,
+    FILEMODE_LOAD,
+    SLUGS_FILENAME,
+    FILEMODE_UPDATE,
+    WALLPAPERS_FILENAME,
+)
 import requests
 from parsel import Selector
 import os.path
 import csv
 
 from utils import Wallpaper, get_god_name, is_url_valid
-from writers import BaseWriter
+from writers import CsvWriter
 
 MULTIPLE_POSTS_URL = "https://cms.smitegame.com/wp-json/smite-api/get-posts/1"
 SINGLE_POST_URL = "https://cms.smitegame.com/wp-json/smite-api/get-post/1"
@@ -21,12 +28,21 @@ class SlugScraper:
         limit=1000,
         offset=0,
         output_path=SLUGS_FILENAME,  # TODO: Add option to specify date range
+        filemode=FILEMODE_LOAD,
     ):
         self.limit = limit
         self.offset = offset
         self.output_path = output_path
+        self.filemode = filemode
 
     def scrape(self):
+        if os.path.isfile(self.output_path):
+            if self.filemode == FILEMODE_LOAD:
+                # retrieve slugs from an existing file
+                with open(self.output_path, "r") as f:
+                    print(f"Loading slugs from file {self.output_path}.")
+                    return f.read().splitlines()
+
         response = requests.get(
             MULTIPLE_POSTS_URL,
             dict(
@@ -41,9 +57,15 @@ class SlugScraper:
         update_notes = [
             d for d in data if "update notes" in d["real_categories"].lower()
         ]
-        slugs = list(reversed([d["slug"] for d in update_notes]))
+        slugs = [d["slug"] for d in update_notes]
+        if self.filemode == FILEMODE_UPDATE:
+            # merge old slugs with the new ones
+            with open(self.output_path, "r") as f:
+                old_slugs = f.read().splitlines()
+                slugs.extend(old_slugs)
 
-        with open(self.output_path, "a") as f:
+        slugs = list(reversed(list(set(slugs))))
+        with open(self.output_path, "w") as f:
             f.write("\n".join(slugs))
         return slugs
 
