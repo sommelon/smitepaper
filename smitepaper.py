@@ -27,9 +27,15 @@ def main(options):
 
 def scrape_slugs(options):
     print("scraping slugs", options)
-    # slug_scraper = SlugScraper()
-    # slugs = slug_scraper.scrape()
-    # return slugs
+    slug_scraper = SlugScraper(
+        CsvWriter(options.slugs_output_file),
+        limit=options.limit,
+        offset=options.offset,
+        output_path=options.slugs_output_file,
+        filemode=options.slugs_filemode,
+    )
+    slugs = slug_scraper.scrape()
+    return slugs
 
 
 def scrape(options):

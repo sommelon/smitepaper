@@ -1,4 +1,4 @@
-SLUGS_FILENAME = "slugs.txt"
+SLUGS_FILENAME = "slugs.csv"
 WALLPAPERS_FILENAME = "wallpapers.csv"
 GODS_FILENAME = "gods.txt"
 ALL_SIZES = {
