@@ -5,7 +5,7 @@ import warnings
 from constants import ALL_SIZES, GODS_FILENAME
 import requests
 from requests.exceptions import InvalidURL, MissingSchema
-
+import re
 
 f = open(GODS_FILENAME, "r")
 gods = f.read().splitlines()
@@ -29,23 +29,43 @@ def _ask_for_god_name(skin_name):
     return god if god else None
 
 
+def i(string):
+    """Return a pattern with the IGNORECASE flag set"""
+    return re.compile(string, re.IGNORECASE)
+
+
+name_map = {
+    i("AMC"): "Ah Muzen Cab",
+    i("AhMuzen Cab"): "Ah Muzen Cab",
+    i("Isis"): "Eset",
+    i("Chang’e"): "Chang'e",
+    i("Sun Wukon"): "Sun Wukong",
+    i("Crimson Queen"): "Crimson Queen Hera",
+    i("Reightful Heir"): "Reightful Heir Horus",
+    i("Withering Bloom"): "Withering Bloom Persephone",
+    i("Healing Water"): "Healing Water Yemoja",
+    i("Night Watch"): "Night Watch Heimdallr",
+    i("Rising Hero"): "Rising Hero Mulan",
+    i("Wukong"): "Sun Wukong",
+    i("Khumbakarna"): "Kumbhakarna",
+    i("Earl Wubert"): "Sun Wukong Earl Wubert",
+    i("Neith’s Biggest Fan Zhong Kui"): "Zhong Kui",
+}
+
+
+def find_word(w):
+    # Use a regex with word boundaries to prevent matching gods like Ravana with Ra
+    return re.compile(r"\b({0})\b".format(w), flags=re.IGNORECASE).search
+
+
 @lru_cache()
 def get_god_name(skin_name):
-    name_map = {
-        "AMC": "Ah Muzen Cab",
-        "AhMuzen Cab": "Ah Muzen Cab",
-        "Isis": "Eset",
-        "Chang’e": "Chang'e",
-        "Sun Wukon": "Sun Wukong",
-        "Earl Wubert": "Sun Wukong Earl Wubert",
-        "Neith’s Biggest Fan Zhong Kui": "Zhong Kui",
-    }
 
-    for k, v in name_map.items():
-        skin_name = skin_name.replace(k, v)
+    for pattern, replacement in name_map.items():
+        skin_name = pattern.sub(replacement, skin_name)
 
     for god in gods:
-        if god.lower() in skin_name.lower():
+        if find_word(god)(skin_name):
             logging.info(f"Guessed god {god} from skin {skin_name}")
             return god
     return _ask_for_god_name(skin_name)
