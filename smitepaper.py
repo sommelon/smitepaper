@@ -14,7 +14,7 @@ from downloader import Downloader
 from scraper import SlugScraper, WallpaperScraper
 from utils import readlines, size
 
-from writers import CsvWriter
+from writers import CsvWriter, WallpaperCsvWriter
 
 date = datetime.date.today()
 logging.basicConfig(filename=f"{date}.log", level=logging.INFO)
@@ -42,8 +42,16 @@ def scrape(options):
     if not options.slugs:
         vars(options)["slugs"] = scrape_slugs(options)
     print("scraping wallpapers", options)
-    # wallpaper_scraper = WallpaperScraper(CsvWriter(options.wallpapers_output_file), slugs=slugs)
-    # wallpaper_scraper.scrape()
+    wallpaper_scraper = WallpaperScraper(
+        WallpaperCsvWriter(options.wallpapers_output_file, options.format),
+        slugs=options.slugs,
+        gods=options.gods,
+        skins=options.skins,
+        sizes=options.sizes,
+        output_path=options.wallpapers_output_file,
+        filemode=options.wallpapers_filemode,
+    )
+    wallpaper_scraper.scrape()
 
 
 def download(options):
@@ -71,7 +79,7 @@ if __name__ == "__main__":
     parent_parser.add_argument("-g", "--gods", nargs="+")
     parent_parser.add_argument("--skins", nargs="+")
     parent_parser.add_argument("--sizes", type=size, nargs="+")
-    parent_parser.add_argument("--format", choices=CSV_DEFAULT_FORMAT, nargs="+")
+    parent_parser.add_argument("--format", choices=CSV_DEFAULT_FORMAT, default=CSV_DEFAULT_FORMAT, nargs="+")
 
     slug_parent_parser = argparse.ArgumentParser(add_help=False)
     slug_parent_parser.add_argument(
@@ -105,9 +113,9 @@ if __name__ == "__main__":
     )
     scrape_parser.add_argument(
         "--wallpapers-filemode",
-        choices=(FILEMODE_LOAD, FILEMODE_OVERWRITE, FILEMODE_UPDATE),
-        default=FILEMODE_LOAD,
-        help="whether to load and use (l), overwrite (o) or update (u) the output file if it exists",
+        choices=(FILEMODE_OVERWRITE, FILEMODE_UPDATE),
+        default=FILEMODE_UPDATE,
+        help="whether to overwrite (o) or update (u) the output file if it exists",
     )
     scrape_parser.add_argument(
         "--wof",

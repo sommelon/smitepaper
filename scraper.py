@@ -16,7 +16,7 @@ import os.path
 import csv
 
 from utils import Wallpaper, get_god_name, is_url_valid
-from writers import BaseWriter, CsvWriter
+from writers import BaseWriter, CsvWriter, WallpaperCsvWriter
 
 MULTIPLE_POSTS_URL = "https://cms.smitegame.com/wp-json/smite-api/get-posts/1"
 SINGLE_POST_URL = "https://cms.smitegame.com/wp-json/smite-api/get-post/1"
@@ -77,43 +77,79 @@ class SlugScraper:
 
 class WallpaperScraper:
     def __init__(
-        self, writer: BaseWriter, slugs=None, gods=None, skins=None, sizes=None
+        self,
+        writer: BaseWriter = WallpaperCsvWriter,
+        slugs=None,
+        gods=None,
+        skins=None,
+        sizes=None,
+        format=CSV_DEFAULT_FORMAT,
+        output_path=WALLPAPERS_FILENAME,
+        filemode=FILEMODE_UPDATE,
     ):
         self.writer = writer
         self.slugs = slugs or []
         self.gods = gods or []
         self.skins = skins or []
         self.sizes = sizes or []
+        self.format = format
+        self.output_path = output_path
+        self.filemode = filemode
         self.scraped_skins = set()
-        self.failed_urls = {}
-        if os.path.isfile(WALLPAPERS_FILENAME):
-            with open(WALLPAPERS_FILENAME, "r", encoding="utf-8") as f:
+        self.failed_urls = set()
+
+        if os.path.isfile(output_path):
+            with open(output_path, "r", encoding="utf-8") as f:
                 reader = csv.reader(f)
+                god_idx, link_idx, size_idx = (
+                    format.index("god"),
+                    format.index("link"),
+                    format.index("size"),
+                )
                 for row in reader:
-                    self.scraped_skins.add((row[1], row[2] if row[2] else None))
+                    self.scraped_skins.add(
+                        (
+                            row[god_idx],
+                            row[link_idx] if row[link_idx] else None,
+                            row[size_idx],
+                        )
+                    )
 
     def scrape(self):
+        all_wallpapers = []
         for slug in self.slugs:
-            url = SINGLE_POST_URL + f"?slug={slug}"
+            url, params = SINGLE_POST_URL, {"slug": slug}
             try:
-                wallpapers = self._get_wallpapers(url)
-                data = []
+                wallpapers = self._get_wallpapers(url, params)
                 for wallpaper in wallpapers:
-                    if (wallpaper.name, wallpaper.image_link) in self.scraped_skins:
+                    if (
+                        wallpaper.name,
+                        wallpaper.image_link,
+                        wallpaper.size_to_text(),
+                    ) in self.scraped_skins:
                         continue
-                    god_name = get_god_name(wallpaper.name)
-                    if self.gods and god_name in self.gods:
-                        continue
-                    data.append([god_name] + wallpaper.to_csv() + [slug])
-                    self.scraped_skins.add((wallpaper.name, wallpaper.image_link))
-                self.writer.write(data, mode="a")
-            except Exception:
-                self.failed_urls.append(url)
-                logging.exception("Error on url " + url)
 
-    def _get_wallpapers(self, url):
-        print(url)
-        response = requests.get(url)
+                    god_name = get_god_name(wallpaper.name)
+                    if self.gods and god_name not in self.gods:
+                        continue
+
+                    wallpaper.god = god_name
+                    wallpaper.slug = slug
+                    self.scraped_skins.add(
+                        (wallpaper.name, wallpaper.image_link, wallpaper.size_to_text())
+                    )
+
+                filemode = "a" if self.filemode == FILEMODE_UPDATE else "w"
+                self.writer.write(wallpapers, mode=filemode)
+                all_wallpapers.extend(wallpapers)
+            except Exception:
+                self.failed_urls.add(url)
+                logging.exception("Error on url " + url)
+        return all_wallpapers
+
+    def _get_wallpapers(self, url, params) -> List[Wallpaper]:
+        print(url, params)
+        response = requests.get(url, params)
         if not response.ok:
             response.raise_for_status()
 
@@ -161,7 +197,7 @@ class WallpaperScraper:
         return wallpapers
 
     def _get_wallpapers_from_anchors(self, name, anchors_selector):
-        if not list(filter(lambda s: s in name, self.skins)):
+        if self.skins and not [skin for skin in self.skins if skin in name]:
             return []
 
         print("Getting wallpapers for card " + str(name))
@@ -174,7 +210,7 @@ class WallpaperScraper:
             size = anchor.xpath("text()").get()
             size = re.findall("\\d+", size)
             size = tuple([int(e) for e in size])
-            if size in self.sizes:
+            if not self.sizes or size in self.sizes:
                 wallpaper = Wallpaper(name, image_link, size)
                 wallpapers.append(wallpaper)
         return wallpapers

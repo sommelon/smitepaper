@@ -105,9 +105,16 @@ class Wallpaper:
             else None
         )
 
-    def to_csv(self):
-        size = self.size_to_text()
-        return [self.name, self.image_link, size]
+    def to_list(self, format):
+        format_map = {
+            "god": self.god,
+            "skin": self.name,
+            "link": self.image_link,
+            "size": self.size_to_text(),
+            "slug": self.slug,
+        }
+
+        return [format_map[f] for f in format if f in format_map]
 
     def get_filename(self):
         god = self.god or ""
