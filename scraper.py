@@ -6,6 +6,7 @@ from typing import List
 from constants import (
     CSV_DEFAULT_FORMAT,
     FILEMODE_LOAD,
+    FILEMODE_OVERWRITE,
     SLUGS_FILENAME,
     FILEMODE_UPDATE,
     WALLPAPERS_FILENAME,
@@ -98,7 +99,7 @@ class WallpaperScraper:
         self.scraped_skins = set()
         self.failed_urls = set()
 
-        if os.path.isfile(output_path):
+        if filemode != FILEMODE_OVERWRITE and os.path.isfile(output_path):
             with open(output_path, "r", encoding="utf-8") as f:
                 reader = csv.reader(f)
                 god_idx, link_idx, size_idx = (
