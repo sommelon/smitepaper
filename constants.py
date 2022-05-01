@@ -11,3 +11,4 @@ FILEMODE_OVERWRITE = "o"
 FILEMODE_UPDATE = "u"
 FILEMODE_LOAD = "l"
 CSV_DEFAULT_FORMAT = ("god", "skin", "link", "size", "slug")
+DEFAULT_WALLPAPER_OUTPUT_FILEPATH = "./downloads/{god}_{skin}_{size}.{extension}"

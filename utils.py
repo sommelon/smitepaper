@@ -4,11 +4,14 @@ import logging
 import warnings
 from constants import ALL_SIZES, GODS_FILENAME
 import requests
+from collections import namedtuple
 from requests.exceptions import InvalidURL, MissingSchema
 import re
 
+
+ALL_GODS = []
 with open(GODS_FILENAME, "r") as f:
-    gods = f.read().splitlines()
+    ALL_GODS = f.read().splitlines()
 
 
 def valid_input(message, choices=("",)):
@@ -58,7 +61,7 @@ def get_god_name(skin_name):
         if n:
             break
 
-    for god in gods:
+    for god in ALL_GODS:
         if word_pattern(god).search(skin_name):
             logging.info(f"Guessed god {god} from skin {skin_name}")
             return god
@@ -96,6 +99,16 @@ def size(s):
         )
 
 
+def output_filepath(s):
+    try:
+        s.format(god="god", skin="skin", size="size", extension="extension")
+        return s
+    except Exception:
+        raise argparse.ArgumentTypeError(
+            "Size must have the following format: 'WIDTHxHEIGHT' (eg. 1920x1080)."
+        )
+
+
 def readlines(filepath):
     try:
         with open(filepath, "r") as f:
@@ -105,6 +118,9 @@ def readlines(filepath):
         raise argparse.ArgumentTypeError(f"File {filepath} not found.")
 
 
+Size = namedtuple("Size", "width height")
+
+
 class Wallpaper:
     SIZE_DELIMITER = "x"
 
@@ -112,15 +128,21 @@ class Wallpaper:
         self.name = name
         self.image_link = image_link
         if isinstance(size, str):
-            if Wallpaper.SIZE_DELIMITER not in size:
-                raise ValueError(
-                    f"Size {size} doesn't contain {Wallpaper.SIZE_DELIMITER}",
-                )
-            size = size.split(Wallpaper.SIZE_DELIMITER)
-            size = tuple(map(int, size))
+            size = self.text_to_size(size)
         self.size = size
         self.god = god
         self.slug = slug
+
+    def text_to_size(self, text):
+        if isinstance(text, str):
+            if Wallpaper.SIZE_DELIMITER not in text:
+                raise ValueError(
+                    f"Size {text} doesn't contain {Wallpaper.SIZE_DELIMITER}",
+                )
+            text = text.split(Wallpaper.SIZE_DELIMITER)
+            return Size(*map(int, text))
+
+        return Size(*text)
 
     def size_to_text(self):
         return (
@@ -140,16 +162,21 @@ class Wallpaper:
 
         return [format_map[f] for f in format if f in format_map]
 
-    def get_filename(self):
+    def get_file_extension(self):
+        return (
+            self.image_link.split(".")[-1]
+            if self.image_link and "." in self.image_link
+            else "png"
+        )
+
+    def get_filepath(self, format_str):
         god = self.god or ""
         name = self.name or ""
         size = self.size_to_text() or ""
-        file_extension = (
-            self.image_link.split(".")[-1]
-            if self.image_link and "." in self.image_link
-            else ""
+        file_extension = self.get_file_extension()
+        return format_str.format(
+            god=god, skin=name, size=size, extension=file_extension
         )
-        return f"{god} {name} {size}.{file_extension}".replace(" +", "")
 
     def __str__(self) -> str:
         return f"{self.god}: {self.name} {self.size}"

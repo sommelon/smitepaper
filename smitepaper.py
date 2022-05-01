@@ -5,6 +5,7 @@ import sys
 
 from constants import (
     CSV_DEFAULT_FORMAT,
+    DEFAULT_WALLPAPER_OUTPUT_FILEPATH,
     FILEMODE_LOAD,
     FILEMODE_OVERWRITE,
     SLUGS_FILENAME,
@@ -13,7 +14,7 @@ from constants import (
 )
 from downloader import Downloader
 from scraper import SlugScraper, WallpaperScraper
-from utils import readlines, size
+from utils import output_filepath, readlines, size
 
 from writers import CsvWriter, WallpaperCsvWriter
 
@@ -57,8 +58,16 @@ def scrape(options):
 
 def download(options):
     print("downloading", options)
-    # downloader = Downloader(sizes={(3840, 2160)})
-    # downloader.download()
+    downloader = Downloader(
+        input_file=options.input_file,
+        input_format=options.format,
+        slugs=options.slugs,
+        gods=options.gods,
+        skins=options.skins,
+        sizes=options.sizes,
+        output_filepath=options.output_filepath,
+    )
+    downloader.download()
 
 
 if __name__ == "__main__":
@@ -135,9 +144,21 @@ if __name__ == "__main__":
         parents=[parent_parser],
     )
     download_parser.add_argument(
-        "-o",
-        "--output",
-        help="output destination",  # TODO add support for output format
+        "--input-file",
+        default=WALLPAPERS_FILENAME,
+        help="File from which to read wallpaper data.",
+    )
+    download_parser.add_argument(
+        "--input-format",
+        default=CSV_DEFAULT_FORMAT,
+        dest="format",
+        help="Format of the input file.",
+    )
+    download_parser.add_argument(
+        "--output_filepath",
+        type=output_filepath,
+        default=DEFAULT_WALLPAPER_OUTPUT_FILEPATH,
+        help="Output filepath. Supported format strings: '{god}', '{skin}', '{size}', '{extension}'",
     )
     download_parser.set_defaults(func=download)
 
