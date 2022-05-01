@@ -102,17 +102,17 @@ class WallpaperScraper:
         if filemode != FILEMODE_OVERWRITE and os.path.isfile(output_path):
             with open(output_path, "r", encoding="utf-8") as f:
                 reader = csv.reader(f)
-                god_idx, link_idx, size_idx = (
-                    format.index("god"),
+                skin_idx, link_idx, size_idx = (
+                    format.index("skin"),
                     format.index("link"),
                     format.index("size"),
                 )
                 for row in reader:
                     self.scraped_skins.add(
                         (
-                            row[god_idx],
+                            row[skin_idx] if row[skin_idx] else None,
                             row[link_idx] if row[link_idx] else None,
-                            row[size_idx],
+                            row[size_idx] if row[size_idx] else None,
                         )
                     )
 
