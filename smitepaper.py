@@ -1,6 +1,7 @@
 import argparse
 import logging
 import datetime
+import sys
 
 from constants import (
     CSV_DEFAULT_FORMAT,
@@ -23,11 +24,6 @@ logging.basicConfig(
     format="%(asctime)s: %(levelname)s: %(message)s",
     datefmt="%Y.%m.%d %H:%M:%S",
 )
-
-
-def main(options):
-    scrape(options)
-    download(options)
 
 
 def scrape_slugs(options):
@@ -66,8 +62,9 @@ def download(options):
 
 
 if __name__ == "__main__":
-    main_parser = argparse.ArgumentParser(description="")
-    main_parser.set_defaults(func=main)
+    main_parser = argparse.ArgumentParser(
+        description="Smite wallpaper scraper and downloader"
+    )
     subparsers = main_parser.add_subparsers(title="subcommands")
 
     parent_parser = argparse.ArgumentParser(add_help=False)
@@ -153,5 +150,5 @@ if __name__ == "__main__":
     )
     scrape_slugs_parser.set_defaults(func=scrape_slugs)
 
-    args = main_parser.parse_args()
+    args = main_parser.parse_args(None if sys.argv[1:] else ["--help"])
     args.func(args)
