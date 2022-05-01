@@ -18,14 +18,6 @@ from utils import output_filepath, readlines, size
 
 from writers import CsvWriter, WallpaperCsvWriter
 
-date = datetime.date.today()
-logging.basicConfig(
-    handlers=[logging.FileHandler(filename=f"{date}.log", encoding="utf-8")],
-    level=logging.INFO,
-    format="%(asctime)s: %(levelname)s: %(message)s",
-    datefmt="%Y.%m.%d %H:%M:%S",
-)
-
 
 def scrape_slugs(options):
     slug_scraper = SlugScraper(
@@ -74,6 +66,9 @@ if __name__ == "__main__":
     subparsers = main_parser.add_subparsers(title="subcommands")
 
     parent_parser = argparse.ArgumentParser(add_help=False)
+    parent_parser.add_argument(
+        "--log", action="store_true", help="Log events to a file."
+    )
     slug_group = parent_parser.add_mutually_exclusive_group()
     slug_group.add_argument("-s", "--slugs", nargs="+")
     slug_group.add_argument(
@@ -169,4 +164,14 @@ if __name__ == "__main__":
     scrape_slugs_parser.set_defaults(func=scrape_slugs)
 
     args = main_parser.parse_args(None if sys.argv[1:] else ["--help"])
+
+    if args.log:
+        # Setup logging
+        date = datetime.date.today()
+        logging.basicConfig(
+            handlers=[logging.FileHandler(filename=f"{date}.log", encoding="utf-8")],
+            level=logging.INFO,
+            format="%(asctime)s: %(levelname)s: %(message)s",
+            datefmt="%Y.%m.%d %H:%M:%S",
+        )
     args.func(args)
