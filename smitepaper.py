@@ -28,7 +28,6 @@ logging.basicConfig(
 
 
 def scrape_slugs(options):
-    print("scraping slugs", options)
     slug_scraper = SlugScraper(
         CsvWriter(options.slugs_output_file),
         limit=options.limit,
@@ -43,7 +42,6 @@ def scrape_slugs(options):
 def scrape(options):
     if not options.slugs:
         vars(options)["slugs"] = scrape_slugs(options)
-    print("scraping wallpapers", options)
     wallpaper_scraper = WallpaperScraper(
         WallpaperCsvWriter(options.wallpapers_output_file, options.format),
         slugs=options.slugs,
@@ -57,7 +55,6 @@ def scrape(options):
 
 
 def download(options):
-    print("downloading", options)
     downloader = Downloader(
         input_file=options.input_file,
         input_format=options.format,
@@ -85,7 +82,7 @@ if __name__ == "__main__":
         default=SLUGS_FILENAME,
         type=readlines,
         dest="slugs",
-        help="a file containing the slugs to scrape the data from",
+        help="A file containing the slugs to scrape the data from.",
     )
     parent_parser.add_argument("-g", "--gods", nargs="+")
     parent_parser.add_argument("--skins", nargs="+")
@@ -99,10 +96,10 @@ if __name__ == "__main__":
         "--limit",
         type=int,
         default=1000,
-        help="the number of posts to be searched",
+        help="The number of posts to be searched.",
     )
     slug_parent_parser.add_argument(
-        "--offset", type=int, default=0, help="the number of posts to skip"
+        "--offset", type=int, default=0, help="The number of posts to skip."
     )
     # slug_parent_parser.add_argument("-o", "--output", help="path to the output file")
     slug_parent_parser.add_argument(
@@ -110,25 +107,25 @@ if __name__ == "__main__":
         "--slugs-output-file",
         dest="slugs_output_file",
         default=SLUGS_FILENAME,
-        help="the file to put the scraped slugs in",
+        help="The file to put the scraped slugs in.",
     )
     slug_parent_parser.add_argument(
         "--slugs-filemode",
         choices=(FILEMODE_LOAD, FILEMODE_OVERWRITE, FILEMODE_UPDATE),
         default=FILEMODE_LOAD,
-        help="whether to load and use (l), overwrite (o) or update (u) the output file if it exists",
+        help="Whether to load and use (l), overwrite (o) or update (u) the output file if it exists.",
     )
 
     scrape_parser = subparsers.add_parser(
         "scrape",
-        help="scrape slugs and information about wallpapers",
+        help="Scrape slugs and information about wallpapers.",
         parents=[parent_parser, slug_parent_parser],
     )
     scrape_parser.add_argument(
         "--wallpapers-filemode",
         choices=(FILEMODE_OVERWRITE, FILEMODE_UPDATE),
         default=FILEMODE_UPDATE,
-        help="whether to overwrite (o) or update (u) the output file if it exists",
+        help="Whether to overwrite (o) or update (u) the output file if it exists.",
     )
     scrape_parser.add_argument(
         "--wof",
@@ -140,7 +137,7 @@ if __name__ == "__main__":
 
     download_parser = subparsers.add_parser(
         "download",
-        help="download wallpapers from the scraped data",
+        help="Download wallpapers from the scraped data.",
         parents=[parent_parser],
     )
     download_parser.add_argument(
