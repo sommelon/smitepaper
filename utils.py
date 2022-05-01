@@ -7,9 +7,8 @@ import requests
 from requests.exceptions import InvalidURL, MissingSchema
 import re
 
-f = open(GODS_FILENAME, "r")
-gods = f.read().splitlines()
-f.close()
+with open(GODS_FILENAME, "r") as f:
+    gods = f.read().splitlines()
 
 
 def valid_input(message, choices=("",)):
@@ -17,16 +16,6 @@ def valid_input(message, choices=("",)):
     while answer not in choices:
         answer = input(message)
     return answer
-
-
-@lru_cache()  # Use a separate cache so we don't ask for the same skin name multiple times.
-def _ask_for_god_name(skin_name):
-    # TODO: Add file caching
-    god = input(
-        f"Couldn't find god name for skin {skin_name}. Enter the god name or skip by pressing enter: "
-    )
-    logging.info(f"Couldn't guess god from skin {skin_name}. User entered: {god}.")
-    return god if god else None
 
 
 def i(string):
@@ -56,22 +45,34 @@ name_map = {
 }
 
 
-def find_word(w):
+def word_pattern(w):
     # Use a regex with word boundaries to prevent matching gods like Ravana with Ra
-    return re.compile(r"\b({0})\b".format(w), flags=re.IGNORECASE).search
+    return re.compile(r"\b({0})\b".format(w), flags=re.IGNORECASE)
 
 
 @lru_cache()
 def get_god_name(skin_name):
 
     for pattern, replacement in name_map.items():
-        skin_name = pattern.sub(replacement, skin_name)
+        skin_name, n = pattern.subn(replacement, skin_name)
+        if n:
+            break
 
     for god in gods:
-        if find_word(god)(skin_name):
+        if word_pattern(god).search(skin_name):
             logging.info(f"Guessed god {god} from skin {skin_name}")
             return god
     return _ask_for_god_name(skin_name)
+
+
+@lru_cache()  # Use a separate cache so we don't ask for the same skin name multiple times.
+def _ask_for_god_name(skin_name):
+    # TODO: Add file caching
+    god = input(
+        f"Couldn't find god name for skin {skin_name}. Enter the god name or skip by pressing enter: "
+    )
+    logging.info(f"Couldn't guess god from skin {skin_name}. User entered: {god}.")
+    return god if god else None
 
 
 def is_url_valid(url):
@@ -149,3 +150,6 @@ class Wallpaper:
             else ""
         )
         return f"{god} {name} {size}.{file_extension}".replace(" +", "")
+
+    def __str__(self) -> str:
+        return f"{self.god}: {self.name} {self.size}"
