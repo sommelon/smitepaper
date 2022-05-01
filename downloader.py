@@ -63,7 +63,7 @@ class Downloader:
             wallpapers = filter(lambda w: w.name in self.skins, wallpapers)
         if self.sizes:
             wallpapers = filter(lambda w: w.size in self.sizes, wallpapers)
-        return wallpapers
+        return list(wallpapers)
 
     def download(self):
         for wallpaper in self.wallpapers:
