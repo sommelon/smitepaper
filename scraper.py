@@ -122,12 +122,16 @@ class WallpaperScraper:
             url, params = SINGLE_POST_URL, {"slug": slug}
             try:
                 wallpapers = self._get_wallpapers(url, params)
+                wallpapers_to_save = []
                 for wallpaper in wallpapers:
                     if (
                         wallpaper.name,
                         wallpaper.image_link,
                         wallpaper.size_to_text(),
                     ) in self.scraped_skins:
+                        logging.info(
+                            f"Wallpaper {wallpaper} already scraped, skipping."
+                        )
                         continue
 
                     god_name = get_god_name(wallpaper.name)
@@ -139,10 +143,11 @@ class WallpaperScraper:
                     self.scraped_skins.add(
                         (wallpaper.name, wallpaper.image_link, wallpaper.size_to_text())
                     )
+                    wallpapers_to_save.append(wallpaper)
 
                 filemode = "a" if self.filemode == FILEMODE_UPDATE else "w"
-                self.writer.write(wallpapers, mode=filemode)
-                all_wallpapers.extend(wallpapers)
+                self.writer.write(wallpapers_to_save, mode=filemode)
+                all_wallpapers.extend(wallpapers_to_save)
             except Exception:
                 self.failed_urls.add(url)
                 logging.exception("Error on url " + url)
@@ -201,12 +206,12 @@ class WallpaperScraper:
         if self.skins and not [skin for skin in self.skins if skin in name]:
             return []
 
-        print("Getting wallpapers for card " + str(name))
+        print(f"Getting wallpapers for card {name}")
         wallpapers = []
         for anchor in anchors_selector:
             image_link = anchor.xpath("@href").get()
             if not is_url_valid(image_link):
-                print(f"URL {image_link} not valid.", file=sys.stderr)
+                logging.info(f"Skin {name}: URL {image_link} not valid.")
                 image_link = None
             size = anchor.xpath("text()").get()
             size = re.findall("\\d+", size)
