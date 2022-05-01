@@ -2,11 +2,8 @@
 ## Smite wallpaper scraper
 
 ### Scrape links to wallpapers and slugs
-```bash
-python3 smitepaper.py scrape
 ```
-```
-usage: smitepaper.py scrape [-h] [-s SLUGS [SLUGS ...] | -i SLUGS]
+usage: smitepaper.py scrape [-h] [--log] [-s SLUGS [SLUGS ...] | -i SLUGS]
                             [-g GODS [GODS ...]] [--skins SKINS [SKINS ...]]
                             [--sizes SIZES [SIZES ...]]
                             [--format {god,skin,link,size,slug} [{god,skin,link,size,slug} ...]]
@@ -23,9 +20,6 @@ subcommands:
 ```
 
 ### Scrape slugs only
-```bash
-python3 smitepaper.py scrape slugs
-```
 ```
 usage: smitepaper.py scrape slugs [-h] [--limit LIMIT] [--offset OFFSET]
                                   [--sof SLUGS_OUTPUT_FILE]
@@ -33,15 +27,14 @@ usage: smitepaper.py scrape slugs [-h] [--limit LIMIT] [--offset OFFSET]
 ```
 
 ### Download wallpapers from scraped links
-```bash
-python3 smitepaper.py download
 ```
-```
-usage: smitepaper.py download [-h] [-s SLUGS [SLUGS ...] | -i SLUGS]
+usage: smitepaper.py download [-h] [--log] [-s SLUGS [SLUGS ...] | -i SLUGS]
                               [-g GODS [GODS ...]] [--skins SKINS [SKINS ...]]
                               [--sizes SIZES [SIZES ...]]
                               [--format {god,skin,link,size,slug} [{god,skin,link,size,slug} ...]]
-                              [-o OUTPUT]
+                              [--input-file INPUT_FILE]
+                              [--input-format FORMAT]
+                              [--output_filepath OUTPUT_FILEPATH]
 ```
 
 ### Process
