@@ -39,9 +39,10 @@ name_map = {
     i("AhMuzen Cab"): "Ah Muzen Cab",
     i("Isis"): "Eset",
     i("Chang’e"): "Chang'e",
-    i("Sun Wukon"): "Sun Wukong",
+    i("Sun Wukon$"): "Sun Wukong",
+    i("Sun Wukongg"): "Sun Wukong",
     i("Crimson Queen"): "Crimson Queen Hera",
-    i("Reightful Heir"): "Reightful Heir Horus",
+    i("Rightful Heir"): "Rightful Heir Horus",
     i("Withering Bloom"): "Withering Bloom Persephone",
     i("Healing Water"): "Healing Water Yemoja",
     i("Night Watch"): "Night Watch Heimdallr",
@@ -50,6 +51,8 @@ name_map = {
     i("Khumbakarna"): "Kumbhakarna",
     i("Earl Wubert"): "Sun Wukong Earl Wubert",
     i("Neith’s Biggest Fan Zhong Kui"): "Zhong Kui",
+    i("Morrigan"): "The Morrigan",
+    i("Recolor – Supreme"): "Recolor – Supreme Olorun",
 }
 
 
