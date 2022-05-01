@@ -15,6 +15,7 @@ import requests
 from parsel import Selector
 import os.path
 import csv
+from tqdm import tqdm
 
 from utils import Wallpaper, get_god_name, is_url_valid
 from writers import BaseWriter, CsvWriter, WallpaperCsvWriter
@@ -118,7 +119,7 @@ class WallpaperScraper:
 
     def scrape(self):
         all_wallpapers = []
-        for slug in self.slugs:
+        for slug in tqdm(self.slugs):
             url, params = SINGLE_POST_URL, {"slug": slug}
             try:
                 wallpapers = self._get_wallpapers(url, params)

@@ -1,4 +1,5 @@
 import csv
+from tqdm import tqdm
 from pathlib import Path
 import logging
 from typing import List
@@ -66,7 +67,7 @@ class Downloader:
         return list(wallpapers)
 
     def download(self):
-        for wallpaper in self.wallpapers:
+        for wallpaper in tqdm(self.wallpapers):
             filepath = wallpaper.get_filepath(self.output_filepath)
             filepath = Path(filepath)
             parent_dir = filepath.parents[0] if filepath.parents else filepath

@@ -50,7 +50,7 @@ usage: smitepaper.py download [-h] [--log] [-s SLUGS [SLUGS ...] | -i SLUGS]
 ### TODOs
 - [x] Extract the god name from the skin name to allow for better file naming
 - [x] Download wallpapers from the scraped links
-- [ ] Add progress bar ([tqdm](https://github.com/tqdm/tqdm))
+- [x] Add progress bar ([tqdm](https://github.com/tqdm/tqdm))
 - [ ] Add command line arguments to:
     - [x] Specify file names from/to which to read/write
     - [x] Specify file name format for the wallpapers

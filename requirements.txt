@@ -1,2 +1,3 @@
 requests~=2.27
 parsel~=1.6
+tqdm~=4.64
