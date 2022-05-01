@@ -18,10 +18,10 @@ from writers import CsvWriter, WallpaperCsvWriter
 
 date = datetime.date.today()
 logging.basicConfig(
-    filename=f"{date}.log",
-    encoding="utf-8",
+    handlers=[logging.FileHandler(filename=f"{date}.log", encoding="utf-8")],
     level=logging.INFO,
-    format="%(asctime)s:%(levelname)s: %(message)s",
+    format="%(asctime)s: %(levelname)s: %(message)s",
+    datefmt="%Y.%m.%d %H:%M:%S",
 )
 
 
