@@ -17,7 +17,12 @@ from utils import readlines, size
 from writers import CsvWriter, WallpaperCsvWriter
 
 date = datetime.date.today()
-logging.basicConfig(filename=f"{date}.log", level=logging.INFO)
+logging.basicConfig(
+    filename=f"{date}.log",
+    encoding="utf-8",
+    level=logging.INFO,
+    format="%(asctime)s:%(levelname)s: %(message)s",
+)
 
 
 def main(options):
@@ -79,7 +84,9 @@ if __name__ == "__main__":
     parent_parser.add_argument("-g", "--gods", nargs="+")
     parent_parser.add_argument("--skins", nargs="+")
     parent_parser.add_argument("--sizes", type=size, nargs="+")
-    parent_parser.add_argument("--format", choices=CSV_DEFAULT_FORMAT, default=CSV_DEFAULT_FORMAT, nargs="+")
+    parent_parser.add_argument(
+        "--format", choices=CSV_DEFAULT_FORMAT, default=CSV_DEFAULT_FORMAT, nargs="+"
+    )
 
     slug_parent_parser = argparse.ArgumentParser(add_help=False)
     slug_parent_parser.add_argument(
