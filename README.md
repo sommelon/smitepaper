@@ -1,6 +1,11 @@
 # Smitepaper
 ## Smite wallpaper scraper
 
+#### DISCLAIMER
+This project is for education purposes only, I am not responsible for what someone decides to do with it.
+
+## Usage
+
 ### Scrape links to wallpapers and slugs
 ```
 usage: smitepaper.py scrape [-h] [--log] [-s SLUGS [SLUGS ...] | -i SLUGS]
