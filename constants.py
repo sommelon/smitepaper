@@ -1,6 +1,6 @@
-SLUGS_FILENAME = "slugs.csv"
-WALLPAPERS_FILENAME = "wallpapers.csv"
-GODS_FILENAME = "gods.txt"
+SLUGS_FILENAME = "data/slugs.csv"
+WALLPAPERS_FILENAME = "data/wallpapers.csv"
+GODS_FILENAME = "data/gods.txt"
 ALL_SIZES = {
     (1920, 1080),
     (2560, 1440),
