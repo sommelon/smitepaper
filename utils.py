@@ -1,8 +1,6 @@
-import argparse
 from functools import lru_cache
 import logging
-import warnings
-from constants import ALL_SIZES, GODS_FILENAME
+from constants import GODS_FILENAME
 import requests
 from collections import namedtuple
 from requests.exceptions import InvalidURL, MissingSchema
@@ -85,37 +83,6 @@ def is_url_valid(url):
     except (MissingSchema, InvalidURL):
         return False
     return True
-
-
-def size(s):
-    try:
-        width, height = map(int, s.split("x"))
-        if (width, height) not in ALL_SIZES:
-            warnings.warn("This size is not common. Probably won't find anything.")
-        return width, height
-    except Exception:
-        raise argparse.ArgumentTypeError(
-            "Size must have the following format: 'WIDTHxHEIGHT' (eg. 1920x1080)."
-        )
-
-
-def output_filepath(s):
-    try:
-        s.format(god="god", skin="skin", size="size", extension="extension")
-        return s
-    except Exception:
-        raise argparse.ArgumentTypeError(
-            "Size must have the following format: 'WIDTHxHEIGHT' (eg. 1920x1080)."
-        )
-
-
-def readlines(filepath):
-    try:
-        with open(filepath, "r") as f:
-            lines = f.readlines()
-            return [line.strip() for line in lines if line.strip()]
-    except FileNotFoundError:
-        raise argparse.ArgumentTypeError(f"File {filepath} not found.")
 
 
 Size = namedtuple("Size", "width height")
