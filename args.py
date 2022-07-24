@@ -46,7 +46,10 @@ def collect_args(scrape_func, scrape_slugs_func, download_func):
     parent_parser.add_argument("--skins", nargs="+")
     parent_parser.add_argument("--sizes", type=size, nargs="+")
     parent_parser.add_argument(
-        "--format", choices=CSV_DEFAULT_FORMAT, default=CSV_DEFAULT_FORMAT, nargs="+"
+        "--output-format",
+        choices=CSV_DEFAULT_FORMAT,
+        default=CSV_DEFAULT_FORMAT,
+        nargs="+",
     )
 
     slug_parent_parser = argparse.ArgumentParser(add_help=False)

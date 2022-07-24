@@ -25,7 +25,7 @@ def scrape(options):
     if not options.slugs:
         vars(options)["slugs"] = scrape_slugs(options)
     wallpaper_scraper = WallpaperScraper(
-        WallpaperCsvWriter(options.wallpapers_output_file, options.format),
+        WallpaperCsvWriter(options.wallpapers_output_file, options.output_format),
         slugs=options.slugs,
         gods=options.gods,
         skins=options.skins,

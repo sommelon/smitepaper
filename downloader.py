@@ -35,21 +35,14 @@ class Downloader:
     def _load_wallpapers(self):
         wallpapers = []
         with open(self.input_file) as f:
-            reader = csv.reader(f)
-            skin_idx, link_idx, size_idx, god_idx, slug_idx = (
-                self.input_format.index("skin"),
-                self.input_format.index("link"),
-                self.input_format.index("size"),
-                self.input_format.index("god"),
-                self.input_format.index("slug"),
-            )
+            reader = csv.DictReader(f)
             for row in reader:
                 wallpaper = Wallpaper(
-                    row[skin_idx] if row[skin_idx] else None,
-                    row[link_idx] if row[link_idx] else None,
-                    row[size_idx] if row[size_idx] else None,
-                    row[god_idx] if row[god_idx] else None,
-                    row[slug_idx] if row[slug_idx] else None,
+                    name=row.get("skin"),
+                    image_link=row.get("link"),
+                    size=row.get("size"),
+                    god=row.get("god"),
+                    slug=row.get("slug"),
                 )
                 wallpapers.append(wallpaper)
         return wallpapers

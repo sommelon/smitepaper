@@ -1,6 +1,5 @@
 import logging
 import re
-import sys
 import json
 from typing import List
 from constants import (
@@ -30,8 +29,9 @@ class SlugScraper:
         writer: BaseWriter = CsvWriter,
         limit=1000,
         offset=0,
-        output_path=SLUGS_FILENAME,  # TODO: Add option to specify date range
+        output_path=SLUGS_FILENAME,
         filemode=FILEMODE_LOAD,
+        # TODO: Add option to specify date range
     ):
         self.writer = writer
         self.limit = limit
@@ -56,8 +56,7 @@ class SlugScraper:
                 offset=self.offset,
             ),
         )
-        if not response.ok:
-            response.raise_for_status()
+        response.raise_for_status()
 
         data = json.loads(response.text)
         update_notes = [
@@ -85,7 +84,6 @@ class WallpaperScraper:
         gods=None,
         skins=None,
         sizes=None,
-        format=CSV_DEFAULT_FORMAT,
         output_path=WALLPAPERS_FILENAME,
         filemode=FILEMODE_UPDATE,
     ):
@@ -94,7 +92,6 @@ class WallpaperScraper:
         self.gods = gods or []
         self.skins = skins or []
         self.sizes = sizes or []
-        self.format = format
         self.output_path = output_path
         self.filemode = filemode
         self.scraped_skins = set()
@@ -102,19 +99,10 @@ class WallpaperScraper:
 
         if filemode != FILEMODE_OVERWRITE and os.path.isfile(output_path):
             with open(output_path, "r", encoding="utf-8") as f:
-                reader = csv.reader(f)
-                skin_idx, link_idx, size_idx = (
-                    format.index("skin"),
-                    format.index("link"),
-                    format.index("size"),
-                )
+                reader = csv.DictReader(f)
                 for row in reader:
                     self.scraped_skins.add(
-                        (
-                            row[skin_idx] if row[skin_idx] else None,
-                            row[link_idx] if row[link_idx] else None,
-                            row[size_idx] if row[size_idx] else None,
-                        )
+                        (row.get("skin"), row.get("link"), row.get("size"))
                     )
 
     def scrape(self):
