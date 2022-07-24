@@ -155,11 +155,11 @@ class WallpaperScraper:
 
     def _get_new_god_wallpapers(self, selector):
         wallpapers = []
-        god_name = selector.xpath("//div[@class='new-god']//h3/text()").get()
+        god_name = selector.xpath(".//div[@class='new-god']//h3/text()").get()
         recolor_name = selector.xpath(
-            "//div[@class='new-god--recolor']//text()[last()]"
+            ".//div[@class='new-god--recolor']//text()[last()]"
         ).get()
-        new_god_wallpapers = selector.xpath("//div[@class='new-god--wallpapers']")
+        new_god_wallpapers = selector.xpath(".//div[@class='new-god--wallpapers']")
 
         if god_name:
             basic_skin_anchors = new_god_wallpapers[0].xpath(".//a")
@@ -178,7 +178,7 @@ class WallpaperScraper:
 
     def _get_card_wallpapers(self, selector):
         wallpapers = []
-        cards = selector.xpath("//div[@class='god-skin--card']")
+        cards = selector.xpath(".//div[@class='god-skin--card']")
 
         for card in cards:
             wallpaper_anchors = card.xpath("div[@class='god-skins--wallpapers']//a")
@@ -202,7 +202,7 @@ class WallpaperScraper:
                 image_link = None
             size = anchor.xpath("text()").get()
             size = re.findall("\\d+", size)
-            size = tuple([int(e) for e in size])
+            size = tuple(int(e) for e in size)
             if not self.sizes or size in self.sizes:
                 wallpaper = Wallpaper(name, image_link, size)
                 wallpapers.append(wallpaper)
