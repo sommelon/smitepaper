@@ -39,7 +39,6 @@ def scrape(options):
 def download(options):
     downloader = Downloader(
         input_file=options.input_file,
-        input_format=options.format,
         slugs=options.slugs,
         gods=options.gods,
         skins=options.skins,

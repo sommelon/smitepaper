@@ -11,7 +11,7 @@ This project is for education purposes only, I am not responsible for what someo
 usage: smitepaper.py scrape [-h] [--log] [-s SLUGS [SLUGS ...] | -i SLUGS]
                             [-g GODS [GODS ...]] [--skins SKINS [SKINS ...]]
                             [--sizes SIZES [SIZES ...]]
-                            [--format {god,skin,link,size,slug} [{god,skin,link,size,slug} ...]]
+                            [--output-format {god,skin,link,size,slug} [{god,skin,link,size,slug} ...]]
                             [--limit LIMIT] [--offset OFFSET]
                             [--sof SLUGS_OUTPUT_FILE]
                             [--slugs-filemode {l,o,u}]
@@ -36,9 +36,7 @@ usage: smitepaper.py scrape slugs [-h] [--limit LIMIT] [--offset OFFSET]
 usage: smitepaper.py download [-h] [--log] [-s SLUGS [SLUGS ...] | -i SLUGS]
                               [-g GODS [GODS ...]] [--skins SKINS [SKINS ...]]
                               [--sizes SIZES [SIZES ...]]
-                              [--format {god,skin,link,size,slug} [{god,skin,link,size,slug} ...]]
                               [--input-file INPUT_FILE]
-                              [--input-format FORMAT]
                               [--output_filepath OUTPUT_FILEPATH]
 ```
 

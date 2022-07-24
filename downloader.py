@@ -3,7 +3,7 @@ from tqdm import tqdm
 from pathlib import Path
 import logging
 from typing import List
-from constants import CSV_DEFAULT_FORMAT, DEFAULT_WALLPAPER_OUTPUT_FILEPATH
+from constants import DEFAULT_WALLPAPER_OUTPUT_FILEPATH, WALLPAPERS_FILENAME
 import requests
 from utils import Wallpaper, is_url_valid
 
@@ -11,8 +11,7 @@ from utils import Wallpaper, is_url_valid
 class Downloader:
     def __init__(
         self,
-        input_file="wallpapers.csv",
-        input_format=CSV_DEFAULT_FORMAT,
+        input_file=WALLPAPERS_FILENAME,
         output_filepath=DEFAULT_WALLPAPER_OUTPUT_FILEPATH,
         slugs=None,
         gods=None,
@@ -28,7 +27,6 @@ class Downloader:
         self.gods = gods or []
         self.skins = skins or []
         self.sizes = sizes or []
-        self.input_format = input_format
         self.wallpapers: List[Wallpaper] = self._load_wallpapers()
         self.wallpapers = self._filter_wallpapers()
 
