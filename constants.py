@@ -1,6 +1,6 @@
 SLUGS_FILENAME = "data/slugs.csv"
 WALLPAPERS_FILENAME = "data/wallpapers.csv"
-GODS_FILENAME = "data/gods.txt"
+GODS_FILENAME = "data/gods.lst"
 ALL_SIZES = {
     (1920, 1080),
     (2560, 1440),
