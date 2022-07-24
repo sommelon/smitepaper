@@ -7,9 +7,9 @@ from requests.exceptions import InvalidURL, MissingSchema
 import re
 
 
-ALL_GODS = []
+ALL_GODS = ()
 with open(GODS_FILENAME, "r") as f:
-    ALL_GODS = f.read().splitlines()
+    ALL_GODS = tuple(f.read().splitlines())
 
 
 def valid_input(message, choices=("",)):
@@ -46,6 +46,7 @@ name_map = {
 }
 
 
+@lru_cache()
 def word_pattern(w):
     # Use a regex with word boundaries to prevent matching gods like Ravana with Ra
     return re.compile(r"\b({0})\b".format(w), flags=re.IGNORECASE)
@@ -66,7 +67,7 @@ def get_god_name(skin_name):
     return _ask_for_god_name(skin_name)
 
 
-@lru_cache()  # Use a separate cache so we don't ask for the same skin name multiple times.
+@lru_cache()  # Use a separate cache from get_god_name() so we don't ask for the same skin name multiple times.
 def _ask_for_god_name(skin_name):
     # TODO: Add file caching
     god = input(
@@ -92,20 +93,18 @@ class Wallpaper:
     SIZE_DELIMITER = "x"
 
     def __init__(self, name, image_link, size, god=None, slug=None):
-        self.name = name
-        self.image_link = image_link
-        if isinstance(size, str):
-            size = self.text_to_size(size)
-        self.size = size
-        self.god = god
-        self.slug = slug
+        self.name = name or None
+        self.image_link = image_link or None
+        self.size = size or None
+        if isinstance(self.size, str):
+            self.size = self.text_to_size(size)
+        self.god = god or None
+        self.slug = slug or None
 
     def text_to_size(self, text):
         if isinstance(text, str):
             if Wallpaper.SIZE_DELIMITER not in text:
-                raise ValueError(
-                    f"Size {text} doesn't contain {Wallpaper.SIZE_DELIMITER}",
-                )
+                return None
             text = text.split(Wallpaper.SIZE_DELIMITER)
             return Size(*map(int, text))
 

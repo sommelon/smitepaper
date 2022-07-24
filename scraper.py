@@ -3,7 +3,6 @@ import re
 import json
 from typing import List
 from constants import (
-    CSV_DEFAULT_FORMAT,
     FILEMODE_LOAD,
     FILEMODE_OVERWRITE,
     SLUGS_FILENAME,
@@ -145,8 +144,7 @@ class WallpaperScraper:
     def _get_wallpapers(self, url, params) -> List[Wallpaper]:
         print(url, params)
         response = requests.get(url, params)
-        if not response.ok:
-            response.raise_for_status()
+        response.raise_for_status()
 
         data = json.loads(response.text)
         selector = Selector(data["content"])
