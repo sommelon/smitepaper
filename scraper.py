@@ -101,7 +101,11 @@ class WallpaperScraper:
                 reader = csv.DictReader(f)
                 for row in reader:
                     self.scraped_skins.add(
-                        (row.get("skin"), row.get("link"), row.get("size"))
+                        (
+                            row.get("skin") or None,
+                            row.get("link") or None,
+                            row.get("size") or None,
+                        )
                     )
 
     def scrape(self):
