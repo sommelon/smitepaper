@@ -28,7 +28,7 @@ name_map = {
     i("AMC"): "Ah Muzen Cab",
     i("AhMuzen Cab"): "Ah Muzen Cab",
     i("Isis"): "Eset",
-    i("Chang’e"): "Chang'e",
+    i("Chang’?e"): "Chang'e",
     i("Sun Wukon$"): "Sun Wukong",
     i("Sun Wukongg"): "Sun Wukong",
     i("Crimson Queen"): "Crimson Queen Hera",
