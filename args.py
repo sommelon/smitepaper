@@ -73,7 +73,7 @@ def collect_args(scrape_func, scrape_slugs_func, download_func):
     slug_parent_parser.add_argument(
         "--slugs-filemode",
         choices=(FILEMODE_LOAD, FILEMODE_OVERWRITE, FILEMODE_UPDATE),
-        default=FILEMODE_LOAD,
+        default=FILEMODE_UPDATE,
         help="Whether to load and use (l), overwrite (o) or update (u) the output file if it exists.",
     )
 
