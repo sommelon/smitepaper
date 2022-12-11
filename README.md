@@ -6,7 +6,7 @@ This project is for education purposes only, I am not responsible for what someo
 
 ## Usage
 
-### Scrape links to wallpapers and slugs
+### Scrape slugs and links to wallpapers
 ```
 usage: smitepaper.py scrape [-h] [--log] [-s SLUGS [SLUGS ...] | -i SLUGS]
                             [-g GODS [GODS ...]] [--skins SKINS [SKINS ...]]
@@ -48,7 +48,7 @@ usage: smitepaper.py download [-h] [--log] [-s SLUGS [SLUGS ...] | -i SLUGS]
 - The files are kept in this repo, so there is no need to repeat the process, unless they are out of date.
 - `gods.txt` contains the names of the gods. Those are not scraped so it needs manual updates. They are needed to guess the god name from skin name.
 - To keep the csv file up to date, only specify the slugs from which to grab the new wallpapers. It will be significantly faster.
-- There shouldn't be any duplicates if you run the script twice in a row with the same arguments.
+- There shouldn't be any duplicates if you run the script twice in a row with the same arguments. If there are, let me know by creating an issue.
 
 ### TODOs
 - [x] Extract the god name from the skin name to allow for better file naming
