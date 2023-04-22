@@ -1,3 +1,10 @@
+# Project archived
+Starting from patch 10.4, they changed the site structure and started uploading the wallpapers on Google Drive.
+Only the vertical cards can be scraped, but they aren't even the full size.
+This program should still work, but only on the older patch notes.
+There is no need to use it for scraping though, since all the data is in the `data` directory.
+
+
 # Smitepaper
 ## Smite wallpaper scraper
 
@@ -6,6 +13,16 @@ This project is for education purposes only, I am not responsible for what someo
 
 ## Usage
 
+### Download wallpapers from scraped links
+```
+usage: smitepaper.py download [-h] [--log] [-s SLUGS [SLUGS ...] | -i SLUGS]
+                              [-g GODS [GODS ...]] [--skins SKINS [SKINS ...]]
+                              [--sizes SIZES [SIZES ...]]
+                              [--input-file INPUT_FILE]
+                              [--output_filepath OUTPUT_FILEPATH]
+```
+
+## No need to use these
 ### Scrape slugs and links to wallpapers
 ```
 usage: smitepaper.py scrape [-h] [--log] [-s SLUGS [SLUGS ...] | -i SLUGS]
@@ -29,15 +46,6 @@ subcommands:
 usage: smitepaper.py scrape slugs [-h] [--limit LIMIT] [--offset OFFSET]
                                   [--sof SLUGS_OUTPUT_FILE]
                                   [--slugs-filemode {l,o,u}]
-```
-
-### Download wallpapers from scraped links
-```
-usage: smitepaper.py download [-h] [--log] [-s SLUGS [SLUGS ...] | -i SLUGS]
-                              [-g GODS [GODS ...]] [--skins SKINS [SKINS ...]]
-                              [--sizes SIZES [SIZES ...]]
-                              [--input-file INPUT_FILE]
-                              [--output_filepath OUTPUT_FILEPATH]
 ```
 
 ### Process

@@ -164,12 +164,26 @@ class WallpaperScraper:
             ".//div[@class='new-god--recolor']//text()[last()]"
         ).get()
         new_god_wallpapers = selector.xpath(".//div[@class='new-god--wallpapers']")
+        new_god_background_image_link = None
+        if not new_god_wallpapers:
+            element = selector.xpath(".//div[@class='new-god']")
+            style = element.attrib["style"]
+            new_god_background_image_link = style.split("'")[1]
 
         if god_name:
-            basic_skin_anchors = new_god_wallpapers[0].xpath(".//a")
-            wallpapers.extend(
-                self._get_wallpapers_from_anchors(god_name, basic_skin_anchors)
-            )
+            try:
+                basic_skin_anchors = new_god_wallpapers[0].xpath(".//a")
+                wallpapers.extend(
+                    self._get_wallpapers_from_anchors(god_name, basic_skin_anchors)
+                )
+            except IndexError:
+                wallpapers.append(
+                    Wallpaper(
+                        god_name,
+                        new_god_background_image_link,
+                        None,  # To get the size, we would need to download the image
+                    )
+                )
         if recolor_name:
             for wallpaper in new_god_wallpapers[1:]:
                 recolor_wallpaper_anchors = wallpaper.xpath(".//a")
